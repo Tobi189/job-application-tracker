@@ -1,7 +1,27 @@
 <!doctype html>
-<html>
-<head><title>jobs</title></head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Job Applications</title>
+</head>
 <body>
-<h1>Hello from Thymeleaf</h1>
+
+<h1>Job Applications</h1>
+
+<table border="1">
+    <tr>
+        <th>Company</th>
+        <th>Position</th>
+        <th>Status</th>
+        <th>Applied Date</th>
+    </tr>
+
+    <tr th:each="job : ${jobs}">
+        <td th:text="${job.company}"></td>
+        <td th:text="${job.position}"></td>
+        <td th:text="${job.status}"></td>
+        <td th:text="${job.appliedDate}"></td>
+    </tr>
+</table>
+
 </body>
 </html>
