@@ -29,7 +29,16 @@
         <td th:text="${j.position}"></td>
         <td th:text="${j.status}"></td>
         <td th:text="${j.appliedDate}"></td>
-        <td th:text="${j.notes}"></td>
+        <td class="notes-cell">
+            <button
+                    type="button"
+                    class="notes-preview"
+                    th:attr="data-notes=${j.notes}"
+                    th:text="${j.notes}"
+                    onclick="openNotesPopover(this)">
+            </button>
+        </td>
+
     </tr>
     </tbody>
 </table>
@@ -80,6 +89,8 @@
         </form>
     </div>
 </div>
+</body>
+<script th:src="@{/app.js(v=${#dates.createNow().time})}"></script>
 
-<script th:src="@{/app.js}"></script></body>
+
 </html>

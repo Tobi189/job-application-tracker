@@ -40,4 +40,60 @@ body { font-family: system-ui, Arial, sans-serif; margin: 20px; }
   display: none;
 }
 
+/* notes preview inside table cell */
+.notes-cell { position: relative; }
+
+.notes-preview{
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notes-preview:hover { text-decoration: underline; }
+
+/* popover viewer */
+.notes-popover {
+  position: fixed;
+  z-index: 9999;
+  max-width: min(520px, calc(100vw - 24px));
+  max-height: min(260px, calc(100vh - 24px));
+  overflow: auto;
+
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: #fff;
+  color: #111;
+
+  box-shadow: 0 12px 36px rgba(0,0,0,0.25);
+  outline: none;
+}
+
+.notes-popover-title {
+  font-weight: 700;
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.notes-popover-text {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.jobs-table { table-layout: fixed; width: 100%; }
+.jobs-table th, .jobs-table td { word-break: break-word; }
+
 
