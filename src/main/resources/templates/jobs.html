@@ -42,7 +42,7 @@
             <button id="closeModalBtn" class="icon-btn" type="button" aria-label="Close">✕</button>
         </div>
 
-        <form th:action="@{/jobs}" th:object="${job}" method="post" class="modal-body">
+        <form autocomplete="off" th:action="@{/jobs}" th:object="${job}" method="post" class="modal-body">
             <label>
                 Company
                 <input type="text" th:field="*{company}" required>
