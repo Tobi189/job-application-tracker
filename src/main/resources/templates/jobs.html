@@ -3,45 +3,72 @@
 <head>
     <title>Job Applications</title>
     <link rel="stylesheet" th:href="@{/style.css(v=${#dates.createNow().time})}">
-
+</head>
 
 <body>
 
 <header class="topbar">
     <h1>Job Applications</h1>
-    <button id="openModalBtn" type="button">Add Job</button>
+    <button id="openModalBtn" type="button" class="btn">Add Job</button>
 </header>
 
-<table class="jobs-table">
-    <thead>
-    <tr>
-        <th>Company</th>
-        <th>Position</th>
-        <th>Status</th>
-        <th>Applied Date</th>
-        <th>Notes</th>
-    </tr>
-    </thead>
+<div class="table-wrap">
+    <table class="jobs-table">
+        <thead>
+        <tr>
+            <th class="col-company">Company</th>
+            <th class="col-position">Position</th>
+            <th class="col-status">Status</th>
+            <th class="col-date">Applied Date</th>
+            <th class="col-notes">Notes</th>
+            <th class="col-actions">Actions</th>
+        </tr>
+        </thead>
 
-    <tbody>
-    <tr th:each="j : ${jobs}">
-        <td th:text="${j.company}"></td>
-        <td th:text="${j.position}"></td>
-        <td th:text="${j.status}"></td>
-        <td th:text="${j.appliedDate}"></td>
-        <td class="notes-cell">
-            <button
-                    type="button"
-                    class="notes-preview"
-                    th:attr="data-notes=${j.notes}"
-                    th:text="${j.notes}"
-                    onclick="openNotesPopover(this)">
-            </button>
-        </td>
+        <tbody>
+        <tr th:each="j : ${jobs}">
+            <td th:text="${j.company}"></td>
+            <td th:text="${j.position}"></td>
+            <td th:text="${j.status}"></td>
+            <td th:text="${j.appliedDate}"></td>
 
-    </tr>
-    </tbody>
-</table>
+            <td class="notes-cell">
+                <button
+                        type="button"
+                        class="notes-preview"
+                        th:attr="data-notes=${j.notes}"
+                        th:text="${j.notes}"
+                        onclick="openNotesPopover(this)">
+                </button>
+            </td>
+
+            <td class="actions-cell">
+                <button
+                        type="button"
+                        class="btn btn-small"
+                        th:attr="
+                            data-id=${j.id},
+                            data-company=${j.company},
+                            data-position=${j.position},
+                            data-status=${j.status},
+                            data-appliedDate=${j.appliedDate},
+                            data-notes=${j.notes}
+                        "
+                        onclick="editJob(this)">
+                    Edit
+                </button>
+
+                <form
+                        th:action="@{'/jobs/' + ${j.id} + '/delete'}"
+                        method="post"
+                        onsubmit="return confirm('Delete this job?');">
+                    <button type="submit" class="btn btn-small btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 <!-- Modal overlay -->
 <div id="modalOverlay" class="modal-overlay hidden" aria-hidden="true">
@@ -51,7 +78,7 @@
             <button id="closeModalBtn" class="icon-btn" type="button" aria-label="Close">✕</button>
         </div>
 
-        <form autocomplete="off" th:action="@{/jobs}" th:object="${job}" method="post" class="modal-body">
+        <form id="jobForm" autocomplete="off" th:action="@{/jobs}" th:object="${job}" method="post" class="modal-body">
             <label>
                 Company
                 <input type="text" th:field="*{company}" required>
@@ -83,14 +110,13 @@
             </label>
 
             <div class="modal-footer">
-                <button id="cancelBtn" type="button">Cancel</button>
-                <button type="submit">Save</button>
+                <button id="cancelBtn" type="button" class="btn">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
             </div>
         </form>
     </div>
 </div>
-</body>
+
 <script th:src="@{/app.js(v=${#dates.createNow().time})}"></script>
-
-
+</body>
 </html>

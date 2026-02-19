@@ -9,6 +9,7 @@ public class JobApplication {
 
     @Id // Primary key column.
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     // Use database-generated identity/auto-increment values for the primary key.
     private Long id;
 

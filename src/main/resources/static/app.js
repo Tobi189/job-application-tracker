@@ -5,19 +5,28 @@
   const openBtn = document.getElementById("openModalBtn");
   const closeBtn = document.getElementById("closeModalBtn");
   const cancelBtn = document.getElementById("cancelBtn");
-  const form = overlay ? overlay.querySelector("form") : null;
+  const form = document.getElementById("jobForm") || (overlay ? overlay.querySelector("form") : null);
 
   if (!overlay || !openBtn) return;
 
+  function setCreateMode() {
+    const title = document.getElementById("modalTitle");
+    if (title) title.textContent = "Add Job";
+
+    if (form) {
+      form.setAttribute("action", "/jobs");
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.textContent = "Save";
+    }
+  }
+
   function openModal() {
-    // Close notes popover if it's open (polish)
     if (window.closeNotesPopover) window.closeNotesPopover();
 
-    // reset old values BEFORE showing
+    setCreateMode();
+
     if (form) {
       form.reset();
-
-      // optional: set default status every time
       const status = form.querySelector('select[name="status"]');
       if (status) status.value = "APPLIED";
     }
@@ -32,8 +41,6 @@
   function closeModal() {
     overlay.classList.add("hidden");
     overlay.setAttribute("aria-hidden", "true");
-
-    // also clear on close (so if user cancels, it doesn't keep stuff)
     if (form) form.reset();
   }
 
@@ -42,19 +49,56 @@
   if (closeBtn) closeBtn.addEventListener("click", closeModal);
   if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
 
-  // Close when clicking outside the modal box
   overlay.addEventListener("click", (e) => {
     if (e.target === overlay) closeModal();
   });
 
-  // Close on Escape
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && !overlay.classList.contains("hidden")) closeModal();
   });
 
-  // Optional: hide immediately on submit (page will redirect anyway)
-  if (form) form.addEventListener("submit", closeModal);
 })();
+
+/* ----------------------------
+   Edit button => reuse modal
+----------------------------- */
+
+function editJob(btn) {
+  const overlay = document.getElementById("modalOverlay");
+  const form = document.getElementById("jobForm") || (overlay ? overlay.querySelector("form") : null);
+  if (!overlay || !form) return;
+
+  if (window.closeNotesPopover) window.closeNotesPopover();
+
+  const id = btn.getAttribute("data-id");
+  if (!id) return;
+
+  const title = document.getElementById("modalTitle");
+  if (title) title.textContent = "Edit Job";
+
+  const submitBtn = form.querySelector('button[type="submit"]');
+  if (submitBtn) submitBtn.textContent = "Update";
+
+  form.setAttribute("action", `/jobs/${id}/update`);
+
+  const setVal = (name, value) => {
+    const el = form.querySelector(`[name="${name}"]`);
+    if (!el) return;
+    el.value = value ?? "";
+  };
+
+  setVal("company", btn.getAttribute("data-company"));
+  setVal("position", btn.getAttribute("data-position"));
+  setVal("status", btn.getAttribute("data-status"));
+  setVal("appliedDate", btn.getAttribute("data-appliedDate"));
+  setVal("notes", btn.getAttribute("data-notes"));
+
+  overlay.classList.remove("hidden");
+  overlay.setAttribute("aria-hidden", "false");
+
+  const firstInput = overlay.querySelector("input, select, textarea");
+  if (firstInput) firstInput.focus();
+}
 
 /* ----------------------------
    Notes popover (table notes)
@@ -71,17 +115,16 @@ function closeNotesPopover() {
 }
 
 function openNotesPopover(btn) {
-  // Toggle: clicking same button closes
+  // toggle
   if (activeNotesPopover && activeNotesSourceBtn === btn) {
     closeNotesPopover();
     return;
   }
 
-  // Close any existing popover first
   if (activeNotesPopover) closeNotesPopover();
 
   const fullText = (btn.getAttribute("data-notes") || "").trim();
-  if (!fullText) return; // don't open empty notes
+  if (!fullText) return;
 
   const pop = document.createElement("div");
   pop.className = "notes-popover";
@@ -97,24 +140,19 @@ function openNotesPopover(btn) {
   activeNotesPopover = pop;
   activeNotesSourceBtn = btn;
 
-  // Position near the clicked button
   const r = btn.getBoundingClientRect();
   const margin = 8;
 
-  // default: below-left
   let top = r.bottom + margin;
   let left = r.left;
 
-  // Measure after adding to DOM
   const popRect = pop.getBoundingClientRect();
 
-  // Keep inside viewport horizontally
   if (left + popRect.width > window.innerWidth - margin) {
     left = window.innerWidth - popRect.width - margin;
   }
   left = Math.max(margin, left);
 
-  // Keep inside viewport vertically (try above if needed)
   if (top + popRect.height > window.innerHeight - margin) {
     top = r.top - popRect.height - margin;
   }
@@ -123,10 +161,8 @@ function openNotesPopover(btn) {
   pop.style.top = `${top}px`;
   pop.style.left = `${left}px`;
 
-  // Focus so "focus switches" closes it
   pop.focus();
 
-  // Close rules
   const onDocMouseDown = (e) => {
     if (!activeNotesPopover) return;
     if (activeNotesPopover.contains(e.target) || btn.contains(e.target)) return;
@@ -148,7 +184,6 @@ function openNotesPopover(btn) {
     }
   };
 
-  // If the page scrolls/resizes, close (prevents weird floating)
   const onScrollOrResize = () => {
     closeNotesPopover();
     cleanup();
