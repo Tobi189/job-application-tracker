@@ -42,7 +42,8 @@
         </thead>
 
         <tbody id="jobsTbody">
-        <tr th:each="j : ${jobs}">
+        <tr th:each="j : ${jobs}"
+            th:classappend="' status-' + ${#strings.toLowerCase(j.status)}">
             <td th:text="${j.company}"></td>
             <td th:text="${j.position}"></td>
             <td th:text="${j.status}"></td>

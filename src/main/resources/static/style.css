@@ -432,3 +432,27 @@ body{
     gap: 10px;
   }
 }
+
+/* =========================
+   Status colored borders
+========================= */
+
+/* Desktop: color the whole row, not the first cell */
+.jobs-table tbody tr{
+  box-shadow: inset 6px 0 0 transparent;  /* left bar inside row */
+}
+
+.jobs-table tbody tr.status-rejected  { box-shadow: inset 6px 0 0 #dc2626; }
+.jobs-table tbody tr.status-applied   { box-shadow: inset 6px 0 0 #f59e0b; }
+.jobs-table tbody tr.status-interview { box-shadow: inset 6px 0 0 #2563eb; }
+.jobs-table tbody tr.status-offer     { box-shadow: inset 6px 0 0 #16a34a; }
+/* Mobile/card mode: color the card border itself */
+@media (max-width: 860px){
+  .jobs-table tr{
+    border-left: 6px solid transparent;
+  }
+  .jobs-table tr.status-rejected  { border-left-color: #dc2626; }
+  .jobs-table tr.status-applied   { border-left-color: #f59e0b; }
+  .jobs-table tr.status-interview { border-left-color: #2563eb; }
+  .jobs-table tr.status-offer     { border-left-color: #16a34a; }
+}
