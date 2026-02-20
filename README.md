@@ -1,9 +1,12 @@
 # Jobtracker
 
-A full-stack Spring Boot web application for tracking job applications.
+Jobtracker is a full-stack Spring Boot web application for managing and
+tracking job applications.
 
-Built with **Spring Boot 4**, **Java 25**, **PostgreSQL**,
-**Thymeleaf**, and fully containerized with **Docker**.
+The application allows users to create, update, delete, search, and
+filter job applications with persistent PostgreSQL storage. The project
+follows a clean layered architecture and is fully containerized using
+Docker.
 
 ------------------------------------------------------------------------
 
@@ -11,8 +14,8 @@ Built with **Spring Boot 4**, **Java 25**, **PostgreSQL**,
 
 -   Java 25\
 -   Spring Boot 4.0.2\
--   Spring Web (MVC)\
--   Spring Data JPA\
+-   Spring Web (Spring MVC)\
+-   Spring Data JPA (Hibernate)\
 -   PostgreSQL\
 -   Thymeleaf\
 -   Docker & Docker Compose
@@ -21,76 +24,64 @@ Built with **Spring Boot 4**, **Java 25**, **PostgreSQL**,
 
 ## ✨ Features
 
--   Add job applications (modal popup form)
+-   Add job applications using a modal popup window
 -   Edit and delete entries
--   Filter by status
+-   Filter by status (APPLIED, INTERVIEW, OFFER, REJECTED)
 -   Search by company name
--   Sorting functionality
+-   Sort by company name and status
 -   Persistent PostgreSQL database
--   Clean layered architecture
+-   Clean layered architecture (Controller → Service → Repository)
 -   Fully containerized setup
 
 ------------------------------------------------------------------------
 
 ## 📊 Status Types
 
-  Status      Meaning
-  ----------- ----------------------
-  APPLIED     Application sent
-  INTERVIEW   Interview scheduled
+  Status      Description
+  ----------- -----------------------
+  APPLIED     Application submitted
+  INTERVIEW   Interview in progress
   OFFER       Offer received
   REJECTED    Application rejected
 
 ------------------------------------------------------------------------
 
-## 🏗 Project Structure
+## 🖼 Application Screenshots
 
-    src/main/java/app/jobtracker
-    │
-    ├── controller
-    │   └── JobApplicationController
-    │
-    ├── model
-    │   └── JobApplication
-    │
-    ├── repository
-    │   └── JobApplicationRepository
-    │
-    ├── service
-    │   └── JobApplicationService
-    │
-    └── JobtrackerApplication
+The screenshots are located in:
 
-Frontend:
+docs/screenshots/
 
-    src/main/resources
-    ├── static
-    │   ├── app.js
-    │   └── style.css
-    │
-    ├── templates
-    │   └── jobs.html
-    │
-    └── application.properties
+### Main View
+
+Displays the list of all job applications with status badges, filtering,
+searching, and sorting controls.
+
+![Main View](docs/screenshots/main%20view.png)
 
 ------------------------------------------------------------------------
 
-## 🖼 Screenshots
+### Add Job Window
 
-Create a folder in the project root:
+Modal popup form used to create a new job application.
 
-    docs/screenshots/
+![Add Window](docs/screenshots/add%20window.png)
 
-Add your screenshots with these names:
+------------------------------------------------------------------------
 
--   main-view.png
--   add-modal.png
--   search.png
--   sorting.png
+### Sorting by Company Name
 
-Example usage in README:
+Example of sorting the table by company name.
 
-    ![Main View](docs/screenshots/main-view.png)
+![Sorting Company Name](docs/screenshots/sorting%20company%20name.png)
+
+------------------------------------------------------------------------
+
+### Sorting by Status
+
+Example of sorting the table by application status.
+
+![Sorting Status](docs/screenshots/sorting%20status.png)
 
 ------------------------------------------------------------------------
 
@@ -100,9 +91,7 @@ Make sure Docker Desktop is running.
 
 ### Build and start containers
 
-``` bash
-docker compose up --build
-```
+    docker compose up --build
 
 ### Open the application
 
@@ -110,15 +99,11 @@ http://localhost:8081/jobs
 
 ### Stop containers
 
-``` bash
-docker compose down
-```
+    docker compose down
 
 ### Reset database (delete volume)
 
-``` bash
-docker compose down -v
-```
+    docker compose down -v
 
 ------------------------------------------------------------------------
 
@@ -137,9 +122,10 @@ docker compose down -v
 
 3.  Run the application:
 
-``` bash
-mvn spring-boot:run
+```{=html}
+<!-- -->
 ```
+    mvn spring-boot:run
 
 Then open:
 
@@ -149,9 +135,16 @@ http://localhost:8081/jobs
 
 ## 🗄 Database
 
-Table: `job_applications`
+Table: job_applications
 
-Fields: - id - company - position - status - applied_date - notes
+Fields:
+
+-   id\
+-   company\
+-   position\
+-   status\
+-   applied_date\
+-   notes
 
 Hibernate configuration:
 
@@ -159,7 +152,7 @@ Hibernate configuration:
 
 ------------------------------------------------------------------------
 
-## 🎯 Purpose of the Project
+## 🎯 Purpose
 
 This project demonstrates:
 
@@ -167,21 +160,7 @@ This project demonstrates:
 -   JPA entity mapping
 -   Server-side rendering with Thymeleaf
 -   Dockerized Spring Boot application
--   Environment-based configuration
 -   PostgreSQL integration
+-   Environment-based configuration
 
 ------------------------------------------------------------------------
-
-## 🔮 Possible Improvements
-
--   REST API endpoints
--   Authentication (Spring Security)
--   Pagination
--   CI/CD pipeline
--   Cloud deployment
-
-------------------------------------------------------------------------
-
-## 📌 Author
-
-Your Name
