@@ -203,3 +203,104 @@ function openNotesPopover(btn) {
   window.addEventListener("scroll", onScrollOrResize, true);
   window.addEventListener("resize", onScrollOrResize);
 }
+
+/* ----------------------------
+   Filtering (status + company)
+----------------------------- */
+
+(function () {
+  const statusEl = document.getElementById("statusFilter");
+  const companyEl = document.getElementById("companyFilter");
+  const tbody = document.getElementById("jobsTbody");
+
+  if (!statusEl || !companyEl || !tbody) return;
+
+  let t = null;
+  let currentAbort = null;
+
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+  }
+
+  function renderJobs(jobs) {
+    closeNotesPopover?.(); // close popover if open
+
+    tbody.innerHTML = (jobs || []).map((j) => {
+      const id = j.id;
+      const company = escapeHtml(j.company);
+      const position = escapeHtml(j.position);
+      const status = escapeHtml(j.status);
+      const appliedDate = escapeHtml(j.appliedDate || "");
+      const notes = escapeHtml(j.notes || "");
+
+      const notesBtn = notes
+        ? `<button type="button" class="notes-preview"
+              data-notes="${notes}"
+              onclick="openNotesPopover(this)">${notes}</button>`
+        : "";
+
+      return `
+        <tr>
+          <td>${company}</td>
+          <td>${position}</td>
+          <td>${status}</td>
+          <td>${appliedDate}</td>
+
+          <td class="notes-cell">${notesBtn}</td>
+
+          <td class="actions-cell">
+            <button
+              type="button"
+              class="btn btn-small"
+              data-id="${id}"
+              data-company="${company}"
+              data-position="${position}"
+              data-status="${status}"
+              data-appliedDate="${appliedDate}"
+              data-notes="${notes}"
+              onclick="editJob(this)"
+            >Edit</button>
+
+            <form action="/jobs/${id}/delete" method="post"
+                  onsubmit="return confirm('Delete this job?');">
+              <button type="submit" class="btn btn-small btn-danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  async function fetchJobs() {
+    const status = statusEl.value;
+    const company = companyEl.value;
+
+    if (currentAbort) currentAbort.abort();
+    currentAbort = new AbortController();
+
+    const url = `/jobs/search?status=${encodeURIComponent(status)}&company=${encodeURIComponent(company)}`;
+
+    try {
+      const res = await fetch(url, { signal: currentAbort.signal });
+      if (!res.ok) return;
+      const jobs = await res.json();
+      renderJobs(jobs);
+    } catch (e) {
+      // ignore abort errors
+    }
+  }
+
+  function debounceFetch() {
+    if (t) clearTimeout(t);
+    t = setTimeout(fetchJobs, 150);
+  }
+
+  statusEl.addEventListener("change", fetchJobs);
+  companyEl.addEventListener("input", debounceFetch);
+
+})();

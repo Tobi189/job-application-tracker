@@ -3,6 +3,7 @@ package app.jobtracker.service;
 import app.jobtracker.model.JobApplication;
 import app.jobtracker.repository.JobApplicationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +22,7 @@ public class JobApplicationService {
     }
 
     public List<JobApplication> findAll() {
-        return repository.findAll();
+        return repository.findAllByOrderByIdDesc();
     }
 
     public JobApplication save(JobApplication job) {
@@ -47,5 +48,29 @@ public class JobApplicationService {
         existing.setNotes(incoming.getNotes());
 
         return repository.save(existing);
+    }
+
+    /**
+     * Filtering + searching.
+     * status can be "ALL" or blank => ignore status filter.
+     * company can be blank => ignore company search.
+     */
+    public List<JobApplication> search(String status, String company) {
+        String s = (status == null) ? "" : status.trim();
+        String c = (company == null) ? "" : company.trim();
+
+        boolean hasStatus = StringUtils.hasText(s) && !"ALL".equalsIgnoreCase(s);
+        boolean hasCompany = StringUtils.hasText(c);
+
+        if (hasStatus && hasCompany) {
+            return repository.findByStatusAndCompanyContainingIgnoreCaseOrderByIdDesc(s, c);
+        }
+        if (hasStatus) {
+            return repository.findByStatusOrderByIdDesc(s);
+        }
+        if (hasCompany) {
+            return repository.findByCompanyContainingIgnoreCaseOrderByIdDesc(c);
+        }
+        return repository.findAllByOrderByIdDesc();
     }
 }

@@ -11,7 +11,23 @@
     <h1>Job Applications</h1>
     <button id="openModalBtn" type="button" class="btn">Add Job</button>
 </header>
+<section class="filters">
+    <label class="filter-item">
+        Status
+        <select id="statusFilter">
+            <option value="ALL">ALL</option>
+            <option value="APPLIED">APPLIED</option>
+            <option value="INTERVIEW">INTERVIEW</option>
+            <option value="OFFER">OFFER</option>
+            <option value="REJECTED">REJECTED</option>
+        </select>
+    </label>
 
+    <label class="filter-item">
+        Company
+        <input id="companyFilter" type="text" placeholder="Search by company..." autocomplete="off">
+    </label>
+</section>
 <div class="table-wrap">
     <table class="jobs-table">
         <thead>
@@ -25,7 +41,7 @@
         </tr>
         </thead>
 
-        <tbody>
+        <tbody id="jobsTbody">
         <tr th:each="j : ${jobs}">
             <td th:text="${j.company}"></td>
             <td th:text="${j.position}"></td>
