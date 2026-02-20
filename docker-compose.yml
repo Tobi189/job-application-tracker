@@ -1,15 +1,37 @@
 services:
   db:
     image: postgres:16
-    container_name: jobtracker-db
+    container_name: app_db
     environment:
-      POSTGRES_DB: jobtracker
-      POSTGRES_USER: jobtracker_user
-      POSTGRES_PASSWORD: jobtracker_password
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
-      - jobtracker_pgdata:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d app"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: spring_app
+    ports:
+      - "8081:8081"
+    environment:
+      # Option A: Spring Boot standard env vars (recommended)
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/app
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD: app
+
+      # If you use flyway/liquibase you can set more here if needed
+      # SPRING_FLYWAY_ENABLED: "true"
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
-  jobtracker_pgdata:
+  db_data:
