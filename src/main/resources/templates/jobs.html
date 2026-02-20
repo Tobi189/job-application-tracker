@@ -53,6 +53,7 @@
                 <button
                         type="button"
                         class="notes-preview"
+                        th:if="${j.notes != null and !#strings.isEmpty(j.notes)}"
                         th:attr="data-notes=${j.notes}"
                         th:text="${j.notes}"
                         onclick="openNotesPopover(this)">
