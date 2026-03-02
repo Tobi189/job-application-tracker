@@ -150,17 +150,4 @@ Hibernate configuration:
 
     spring.jpa.hibernate.ddl-auto=update
 
-------------------------------------------------------------------------
 
-## 🎯 Purpose
-
-This project demonstrates:
-
--   Layered architecture (Controller → Service → Repository)
--   JPA entity mapping
--   Server-side rendering with Thymeleaf
--   Dockerized Spring Boot application
--   PostgreSQL integration
--   Environment-based configuration
-
-------------------------------------------------------------------------
